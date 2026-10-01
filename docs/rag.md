@@ -1,3 +1,10 @@
+> **Note**: `InMemoVectorStore` is lexical keyword scoring over curated `keywords`,
+> titles and body text - not embeddings and not a vector index. The knowledge base is
+> the decorative-surfaces sample set in `src/tools/knowledge/search-documents.ts`
+> (care guides, warranty, returns, fabrication specs, fire ratings, sustainability,
+> lead times, samples, plus confidential internal SOPs). Real semantic retrieval needs
+> embeddings plus pgvector or a vector database.
+
 # Retrieval-Augmented Generation (RAG) Architecture
 
 ## Overview

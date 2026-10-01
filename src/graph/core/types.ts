@@ -59,6 +59,7 @@ export interface ChatState {
     query?: string;
     category?: string;
     color?: string;
+    finish?: string;
     maxPrice?: number;
     minPrice?: number;
   };

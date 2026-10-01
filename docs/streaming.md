@@ -40,7 +40,7 @@ LangGraph execution — each node emits as it completes
 
 ## Client handling
 
-`ChatContainer` consumes two channels from the same `useChat` instance:
+`ChatPanel` consumes two channels from the same `useChat` instance:
 
 - `messages[].content` — assembled from `0:` text parts.
 - `messages[].annotations` — the `8:` payload, rendered as product cards, order

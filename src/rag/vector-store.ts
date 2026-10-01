@@ -20,19 +20,30 @@ export class InMemoVectorStore {
    * Performs semantic / lexical retrieval with relevance scoring
    */
   async search(query: string, limit = 3, allowConfidential = false): Promise<ScoredDocument[]> {
-    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    // Strip punctuation before tokenising: without this, "sample?" never matches the
+    // keyword "sample" and the question falls through to a weaker document.
+    const normalized = query.toLowerCase().replace(/[^a-z0-9\s-]/g, ' ');
+    const terms = normalized.split(/\s+/).filter((t) => t.length > 0);
 
     const scored = this.documents
       .filter((d) => !d.isConfidential || allowConfidential)
       .map((doc) => {
         let matchCount = 0;
-        const text = `${doc.title} ${doc.content}`.toLowerCase();
+        const keywords = (doc.keywords || []).join(' ');
+        const text = `${doc.title} ${doc.content} ${keywords}`.toLowerCase();
+        const titleAndKeywords = `${doc.title} ${keywords}`.toLowerCase();
 
         for (const term of terms) {
-          if (text.includes(term)) {
-            matchCount += term.length > 3 ? 2 : 1;
-          }
+          if (!text.includes(term)) continue;
+          // Weight longer terms, and weight a title/keyword hit above a body hit so a
+          // "how do I clean quartz" style question ranks the care guide first.
+          matchCount += term.length > 3 ? 2 : 1;
+          if (titleAndKeywords.includes(term)) matchCount += 2;
         }
+
+        // Whole-phrase hit on a curated keyword is a strong signal.
+        const phrase = normalized.trim().replace(/\s+/g, ' ');
+        if (phrase.length > 3 && titleAndKeywords.includes(phrase)) matchCount += 4;
 
         const score = terms.length > 0 ? matchCount / terms.length : 0;
         return { doc, score };

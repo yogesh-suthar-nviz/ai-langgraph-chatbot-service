@@ -86,16 +86,21 @@ export async function registerV1Routes(app: FastifyInstance) {
   // User Feedback
   app.post('/feedback', {
     schema: {
-      description: 'Submit thumbs up or down feedback for an assistant response',
+      description: 'Submit structured satisfaction feedback for a conversation or a specific response',
       tags: ['feedback'],
       body: {
         type: 'object',
-        required: ['conversationId', 'rating'],
+        required: ['conversationId', 'rating', 'csat'],
         properties: {
           conversationId: { type: 'string' },
           messageId: { type: 'string' },
           rating: { type: 'string', enum: ['thumbs_up', 'thumbs_down'] },
+          csat: { type: 'integer', minimum: 1, maximum: 5 },
+          topic: { type: 'string' },
+          reasons: { type: 'array', items: { type: 'string' } },
           comment: { type: 'string' },
+          allowContact: { type: 'boolean' },
+          contactEmail: { type: 'string' },
         },
       },
     },

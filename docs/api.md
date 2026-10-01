@@ -24,7 +24,7 @@ Handles message transmission, multi-intent classification, LangGraph workflow ex
 ```json
 {
   "conversationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-  "message": "Find black running shoes under ₹10,000",
+  "message": "Show me white laminate under ₹4,000",
   "stream": true,
   "guestSessionId": "optional-guest-id",
   "action": "message"
@@ -36,7 +36,7 @@ Returns a `text/event-stream` stream with conceptual events:
 - `graph-start`: `{ graphRunId, conversationId, userType }`
 - `node-start`: `{ node: "understand_intent" }`
 - `node-end`: `{ node: "understand_intent", intent: "product_search", route: "commerce" }`
-- `tool-start`: `{ tool: "searchProducts", query: "running shoes" }`
+- `tool-start`: `{ tool: "searchProducts", query: "laminate" }`
 - `tool-result`: `{ tool: "searchProducts", count: 4 }`
 - `message-start`: `{ role: "assistant" }`
 - `message-delta`: `{ delta: "I found " }`

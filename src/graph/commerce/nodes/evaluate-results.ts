@@ -26,8 +26,11 @@ export async function refineQueryNode(state: ChatState): Promise<Partial<ChatSta
 
   // Relax restrictive filters
   const refined = { ...currentFilters };
-  if (refined.color) {
-    // Drop strict color constraint on second pass
+  if (refined.finish) {
+    // Finish is the most restrictive attribute: relax it first
+    delete refined.finish;
+  } else if (refined.color) {
+    // Drop strict color constraint on the next pass
     delete refined.color;
   } else if (refined.maxPrice) {
     // Relax budget by 20% on next pass

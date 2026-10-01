@@ -16,8 +16,8 @@ export async function validateFiltersNode(state: ChatState): Promise<Partial<Cha
   }
 
   // Ensure query exists
-  if (!sanitized.query && !sanitized.color && !sanitized.category) {
-    sanitized.query = 'shoes';
+  if (!sanitized.query && !sanitized.color && !sanitized.category && !sanitized.finish) {
+    sanitized.query = 'laminate';
   }
 
   return {

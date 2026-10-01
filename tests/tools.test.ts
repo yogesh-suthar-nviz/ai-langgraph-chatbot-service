@@ -9,7 +9,7 @@ describe('Tool Registry & Permission Enforcement', () => {
     const guest = await provider.validateToken('guest:session_abc');
     const result = await toolRegistry.executeTool(
       'searchProducts',
-      { query: 'shoes', color: 'black', maxPrice: 10000 },
+      { query: 'laminate', color: 'white', maxPrice: 5000 },
       { user: guest, conversationId: 'conv-1' }
     );
 

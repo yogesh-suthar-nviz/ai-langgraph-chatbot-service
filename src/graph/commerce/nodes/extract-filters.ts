@@ -5,9 +5,13 @@ import { COMMERCE_PROMPTS } from '../../../prompts/commerce/search.js';
 import { logger } from '../../../observability/logger.js';
 
 export const CommerceFilterExtractionSchema = z.object({
-  query: z.string().optional().describe('Main keyword description of product'),
-  category: z.string().optional().describe('Category such as running_shoes, apparel, accessories'),
-  color: z.string().optional().describe('Color preference if specified'),
+  query: z.string().optional().describe('Main keyword description of the product or decor'),
+  category: z
+    .string()
+    .optional()
+    .describe('Material family: laminate, quartz, solid_surface, compact_laminate, edgeband'),
+  color: z.string().optional().describe('Decor or colour family if specified (e.g. white, charcoal, oak)'),
+  finish: z.string().optional().describe('Surface finish if specified (e.g. Matte, Gloss, Texture, Honed, Polished)'),
   maxPrice: z.number().optional().describe('Maximum budget or price threshold'),
   minPrice: z.number().optional().describe('Minimum price threshold'),
 });

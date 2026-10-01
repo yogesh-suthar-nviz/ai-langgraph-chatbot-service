@@ -10,29 +10,25 @@ export const ChatRequestSchema = z.object({
 
 export type ChatRequest = z.infer<typeof ChatRequestSchema>;
 
+/**
+ * Unified feedback payload. A single form is presented to every identity; `userType`
+ * is recorded for segmentation rather than used to branch the form.
+ */
 export const FeedbackRequestSchema = z.object({
   conversationId: z.string().min(1),
   messageId: z.string().optional(),
-  rating: z.string(),
+  /** Coarse rating derived client-side from `csat`. */
+  rating: z.enum(['thumbs_up', 'thumbs_down']),
+  /** 1-5 satisfaction score. */
+  csat: z.number().min(1).max(5),
+  /** What the user was asking about. */
+  topic: z.string().optional(),
+  /** Selected reason chips; the option set depends on the score. */
+  reasons: z.array(z.string()).optional(),
   comment: z.string().optional(),
-  userType: z.enum(['guest', 'external', 'internal']).optional(),
-
-  // Guest Specific Fields
-  foundWhatLookingFor: z.boolean().optional(),
-  browsingCategory: z.string().optional(),
+  allowContact: z.boolean().optional(),
   contactEmail: z.string().optional(),
-
-  // External Customer Specific Fields
-  resolutionStatus: z.enum(['resolved', 'partially_resolved', 'unresolved']).optional(),
-  orderId: z.string().optional(),
-  supportExperienceScore: z.number().min(1).max(5).optional(),
-
-  // Internal Specialist Specific Fields
-  accuracyScore: z.number().min(1).max(5).optional(),
-  routingCorrect: z.boolean().optional(),
-  policyCompliant: z.boolean().optional(),
-  reportedIssueType: z.enum(['hallucination', 'tool_failure', 'unauthorized_attempt', 'workflow_logic', 'none']).optional(),
-  internalNotes: z.string().optional(),
+  userType: z.enum(['guest', 'external', 'internal']).optional(),
 });
 
 export type FeedbackRequest = z.infer<typeof FeedbackRequestSchema>;

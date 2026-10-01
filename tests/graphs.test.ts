@@ -11,8 +11,8 @@ describe('LangGraph End-to-End Orchestration', () => {
     const state: ChatState = {
       conversationId: 'test-conv-1',
       user: guest,
-      messages: [{ role: 'user', content: 'Show me black running shoes under ₹10,000' }],
-      query: 'Show me black running shoes under ₹10,000',
+      messages: [{ role: 'user', content: 'Show me white laminate under ₹5,000' }],
+      query: 'Show me white laminate under ₹5,000',
       searchAttempts: 0,
       requiresHumanApproval: false,
       metadata: {},
@@ -26,7 +26,7 @@ describe('LangGraph End-to-End Orchestration', () => {
     expect(result.route).toBe('commerce');
     expect(result.matchedProducts).toBeDefined();
     expect(result.matchedProducts.length).toBeGreaterThan(0);
-    expect(result.response).toContain('option');
+    expect(result.response).toContain('matching decor');
   });
 
   it('rejects guest attempting to inspect private order status', async () => {

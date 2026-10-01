@@ -2,11 +2,11 @@
 
 ## Overview
 
-The `ai-service` is an enterprise AI orchestration and API backend built with **Node.js**, **Fastify**, **LangGraph.js**, **PostgreSQL**, and **Redis**. It is completely decoupled from the presentation layer (`chatbot-web`) and exposes a versioned REST and Server-Sent Events (SSE) streaming API.
+The `ai-service` is an enterprise AI orchestration and API backend built with **Node.js**, **Fastify**, **LangGraph.js**, **PostgreSQL**, and **Redis**. It is completely decoupled from the presentation layer (`chatbot-web`) and exposes a versioned REST API plus a streaming chat endpoint that speaks the **Vercel AI SDK data stream protocol** (not SSE — see `streaming.md`).
 
 ```mermaid
 graph TD
-    Client[Next.js Client / Chat UI] -->|POST /api/v1/chat (SSE Stream)| API[Fastify Gateway & API Layer]
+    Client[Next.js Client / Chat UI] -->|POST /api/v1/chat - AI SDK data stream| API[Fastify Gateway & API Layer]
     API --> Auth[Authentication & Identity Resolver]
     Auth --> Perm[Authorization & Permission Matrix]
     Perm --> MainGraph[Main LangGraph Orchestrator]
@@ -24,7 +24,7 @@ graph TD
     Tools --> ExtCommerce[Commerce Mock / BigCommerce]
     Tools --> ExtOrders[Orders Mock / ERP]
 
-    MainGraph --> Checkpointer[(PostgreSQL / Memory Checkpointer)]
+    MainGraph --> Checkpointer[(MemorySaver - in-process; PostgresSaver is a target)]
     API --> DB[(PostgreSQL Conversation Store)]
     API --> Cache[(Redis Rate Limiter & Cache)]
 ```
@@ -41,6 +41,10 @@ graph TD
 2. **Why LangGraph.js?**
    - **Deterministic Agentic Workflows**: Unlike unpredictable black-box autonomous agents, LangGraph provides stateful cyclic graphs, conditional routing, guardrails, and deterministic checkpoints.
    - **Human-In-The-Loop**: Native interrupt and resume capabilities allow high-value financial actions (e.g. refunds > ₹5,000) to halt graph execution, wait for supervisor review, and resume safely without lost state.
+   - *Status*: the deterministic routing, cyclic commerce loop and guardrails are built. The
+     HITL **interrupt/resume** mechanism is **not** — `human_approval` currently detects and
+     reports the approval requirement but does not interrupt the graph. See
+     `langgraph-workflows.md` §4 for the required shape.
 
 3. **Why Fastify?**
    - Superior throughput, schema-based JSON serialization, built-in Swagger/OpenAPI support, and minimal overhead for low-latency streaming endpoints.

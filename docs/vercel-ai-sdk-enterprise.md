@@ -9,7 +9,7 @@ This document details the complete end-to-end integration of **Vercel AI SDK** w
 ```mermaid
 flowchart TD
     subgraph Client ["Frontend (chatbot-web / Next.js 15)"]
-        UI["ChatContainer.tsx (React 19)"]
+        UI["ChatWidget / ChatPanel (React 19)"]
         UseChat["useChat Hook (@ai-sdk/react)"]
         Route["App Router Edge Proxy (/api/chat)"]
         UI --> UseChat

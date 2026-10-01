@@ -43,24 +43,13 @@ export async function feedbackHandler(req: FastifyRequest<{ Body: FeedbackReques
   const user = await authService.resolveIdentity(req.headers.authorization);
   const body = req.body;
 
-  // Extract role-specific fields into details object
+  // Everything beyond the coarse rating is stored as structured detail.
   const details: Record<string, unknown> = {
-    // Guest fields
-    foundWhatLookingFor: body.foundWhatLookingFor,
-    browsingCategory: body.browsingCategory,
-    contactEmail: body.contactEmail,
-
-    // External Customer fields
-    resolutionStatus: body.resolutionStatus,
-    orderId: body.orderId,
-    supportExperienceScore: body.supportExperienceScore,
-
-    // Internal Specialist fields
-    accuracyScore: body.accuracyScore,
-    routingCorrect: body.routingCorrect,
-    policyCompliant: body.policyCompliant,
-    reportedIssueType: body.reportedIssueType,
-    internalNotes: body.internalNotes,
+    csat: body.csat,
+    topic: body.topic,
+    reasons: body.reasons,
+    allowContact: body.allowContact === true,
+    contactEmail: body.allowContact ? body.contactEmail : undefined,
   };
 
   const feedback = await conversationRepo.recordFeedback(

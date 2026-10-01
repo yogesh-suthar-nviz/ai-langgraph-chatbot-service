@@ -36,11 +36,23 @@ export class SubgraphRegistry {
       return result;
     });
 
-    this.register('clarification', async (state) => {
+    this.register('clarification', async (_state) => {
       logger.info('Routing execution into Clarification node');
-      const lastUserMsg = [...state.messages].reverse().find((m) => m.role === 'user')?.content || '';
       return {
-        response: `Hello! I'm your AI Shopping and Support Assistant. I can help you search our catalog (e.g. *"Show me black running shoes under ₹10,000"*), check your order status (e.g. *"What is the status of ORD-1001?"*), process returns, or answer policy questions. How can I assist you today?`,
+        response:
+          `I'm your surfaces assistant. I can help with:
+
+` +
+          `• **Finding a decor** — *"Show me white marble laminate under ₹4,000"* or *"What quartz do you have in charcoal?"*
+` +
+          `• **Care & specifications** — *"How do I clean quartz?"*, *"What is the minimum corner radius?"*, *"Is compact laminate fire rated?"*
+` +
+          `• **Policies** — *"What is your return policy?"*, *"What does the warranty cover?"*, *"How long are lead times?"*
+` +
+          `• **Your orders** — *"What is the status of ORD-1001?"* (sign in required)
+
+` +
+          `What would you like to look at?`,
       };
     });
   }

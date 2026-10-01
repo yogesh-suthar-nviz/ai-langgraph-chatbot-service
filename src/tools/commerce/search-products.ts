@@ -4,7 +4,7 @@ import { commerceService } from '../../integrations/commerce/mock.js';
 import { Product } from '../../integrations/commerce/interface.js';
 
 export const SearchProductsInputSchema = z.object({
-  query: z.string().optional().describe('Search query keyword, e.g. "running shoes", "jacket"'),
+  query: z.string().optional().describe('Search keyword, e.g. "marble laminate", "quartz", "edgebanding"'),
   category: z.string().optional().describe('Product category filter'),
   color: z.string().optional().describe('Color filter, e.g. "black", "blue"'),
   maxPrice: z.number().optional().describe('Maximum price threshold'),

@@ -23,17 +23,36 @@ export async function generateKnowledgeResponseNode(state: ChatState): Promise<P
 
   if (docs.length === 0) {
     return {
-      response: 'I could not find an answer in our store documentation. Please contact support or ask another question.',
+      response:
+        'I could not find that in our product documentation. I can help with care and cleaning, ' +
+        'warranty terms, returns and restocking, lead times, samples, fabrication guidance, fire ' +
+        'ratings and certifications — or you can reach the support desk at ' +
+        'support@example-surfaces.com.',
+      metadata: {
+        citations: [],
+        component: 'citation_list',
+      },
     };
   }
 
-  const citations = docs.map((d) => `• **${d.title}**: ${d.content}`).join('\n\n');
-  const responseText = `Here is what I found in our policies and documentation:\n\n${citations}`;
+  // Lead with the best match in full, then list the rest as follow-up reading.
+  const [primary, ...others] = docs;
+  let responseText = `**${primary.title}**\n\n${primary.content}`;
+
+  if (others.length > 0) {
+    const related = others
+      .map((d) => {
+        const firstSentence = d.content.split('. ')[0];
+        return `• **${d.title}** — ${firstSentence}.`;
+      })
+      .join('\n');
+    responseText += `\n\n**Related documents**\n${related}`;
+  }
 
   return {
     response: responseText,
     metadata: {
-      citations: docs.map((d) => ({ id: d.id, title: d.title })),
+      citations: docs.map((d) => ({ id: d.id, title: d.title, category: d.category })),
       component: 'citation_list',
     },
   };

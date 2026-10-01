@@ -11,10 +11,26 @@ export async function generateCommerceResponseNode(state: ChatState): Promise<Pa
 
   let textResponse = '';
   if (count === 0) {
-    textResponse = "I couldn't find any products matching those exact specifications in our catalog. Would you like to try a different color, category, or price range?";
+    textResponse =
+      "I couldn't find any decors matching those exact criteria. Would you like to try a different " +
+      'colour, finish, material family, or price range?';
   } else {
-    const top3 = products.slice(0, 3).map((p) => `• **${p.name}** — ₹${p.price.toLocaleString('en-IN')} (Rating: ${p.rating}★)`).join('\n');
-    textResponse = `I found **${count}** great option${count > 1 ? 's' : ''} matching your search:\n\n${top3}\n\nYou can explore each product card below for sizing, specifications, and availability!`;
+    const top3 = products
+      .slice(0, 3)
+      .map((p) => {
+        const detail = [p.finish, p.thicknessMm ? `${p.thicknessMm}mm` : null].filter(Boolean).join(', ');
+        const stock = p.inStock ? '' : ' — _currently out of stock_';
+        return (
+          `• **${p.name}**${detail ? ` (${detail})` : ''} — ` +
+          `₹${p.price.toLocaleString('en-IN')} per ${p.priceUnit || 'unit'}${stock}`
+        );
+      })
+      .join('\n');
+
+    const more = count > 3 ? `\n\nShowing the top 3 of **${count}** matches.` : '';
+    textResponse =
+      `I found **${count}** matching decor${count > 1 ? 's' : ''}:\n\n${top3}${more}\n\n` +
+      'Each card below has the sheet sizes, rated applications and certifications.';
   }
 
   return {
